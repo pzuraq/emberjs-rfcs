@@ -23,7 +23,7 @@ For example, using the old `computed`:
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 
-export default class EmberConf extends Component {
+export default class Profile extends Component {
   firstName = 'Diana';
   lastName = 'Prince';
 
@@ -39,7 +39,7 @@ However, with decorators, currently provided by ember-decorators:
 import Component from '@ember/component';
 import { computed } from '@ember-decorators/object';
 
-export default class EmberConf extends Component {
+export default class Profile extends Component {
   firstName = 'Diana';
   lastName = 'Prince';
 
