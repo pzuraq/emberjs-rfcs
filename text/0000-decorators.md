@@ -17,6 +17,23 @@ _NOTE: This RFC requires that decorators hit Stage 3 and should not be accepted 
 
 ## Motivation
 
+Ultimately, at the end of the RFC, we want to be at a place where we can use decorators for clean and declarative classes that just use native javascript and using same import as the non-decorator equivalents. This is one of the last steps in making ember _just_ javascript.
+
+```ts
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+
+export default class Profile extends Component {
+  firstName = 'Diana';
+  lastName = 'Prince';
+
+  @computed('firstName', 'lastName')
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+}
+```
+
 Decorators bring a more natural way of declaring computed properties to native classes than the current computed macros.
 
 For example, using the old `computed`:
@@ -35,7 +52,7 @@ export default class Profile extends Component {
 }
 ```
 
-However, with decorators, currently provided by ember-decorators:
+However, with decorators, currently provided by ember-decorators, we have a non-standard (though popular) addon that brings computed properties up to modern syntax -- and looks very close to what we'd want native ember to naturally look like.
 
 ```ts
 import Component from '@ember/component';
@@ -52,22 +69,6 @@ export default class Profile extends Component {
 }
 ```
 
-Ultimately, at the end of the RFC, we want to be at a place where we can use method techniques with the same import, and then eventually remove the old functionality.
-
-```ts
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-
-export default class Profile extends Component {
-  firstName = 'Diana';
-  lastName = 'Prince';
-
-  @computed('firstName', 'lastName')
-  get fullName() {
-    return `${this.firstName} ${this.lastName}`;
-  }
-}
-```
 
 
 
