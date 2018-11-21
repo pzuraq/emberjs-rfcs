@@ -78,15 +78,7 @@ Most of the complexity in implementing this RFC will be around wrapping all of t
 Here is the current implementation of `computed` from [@ember/-internals/metal/lib/computed.ts](https://github.com/emberjs/ember.js/blob/be9552f29a329f3b98f1651a075a49f3ed2c92c6/packages/%40ember/-internals/metal/lib/computed.ts#L612)
 ```ts
 export default function computed(...args: (string | ComputedPropertyConfig)[]): ComputedProperty {
-  let func = args.pop();
-
-  let cp = new ComputedProperty(func as ComputedPropertyConfig);
-
-  if (args.length > 0) {
-    cp.property(...(args as string[]));
-  }
-
-  return cp;
+  // details omitted, not relevant
 }
 ```
 
@@ -103,6 +95,8 @@ export const computed = computedDecoratorWithParams(({ key, descriptor }, params
 ```
 
 The gist of the strategy from `@ember-decorators` is that all of the original computed property  macros are used, but wrapped in decorator-specific creation logic. The `computedDecoratorWithParams` abstracts a lot of this decorator-specific functionality, but it would be out of scope for the written portion of this RFC -- an accompanying pull request will be submitted along side this RFC to demonstrate how computed properties will interoperate with decorators and existing code using `computed` from `@ember/object`.
+
+Both the existing `@ember` `computed` and the `@ember-decorators` `@computed` do some validation against the passed arguments to determine how to build the property. For example, the `computedDecoratorWithParams` can handle the scenarios where `@computed` has and does not have arguments passed by checking both the existence of certain parameters, the number of parameters, and the types of the parameters. This technique would be extended to support both `computed` and `@computed` usage from the same import.
 
 This process would be repeated for each computed property macro
 
