@@ -102,11 +102,11 @@ This process would be repeated for each macro. The following tables represent th
 
 | @ember-decorators/service | @ember/service |
 | --- | --- |
-| service | |
+| service | inject<br><br>no conflict, service can just wrap inject [as in `@ember-decorators`.](https://github.com/ember-decorators/ember-decorators/blob/master/packages/service/addon/index.js)   |
 
-| @ember-decorators/controller | @ember/service |
+| @ember-decorators/controller | @ember/controller |
 | --- | --- |
-| controller | |
+| controller | inject<br><br>no conflict, controller can just wrap inject [as in `@ember-decorators`.](https://github.com/ember-decorators/ember-decorators/blob/master/packages/controller/addon/index.js)  |
 
 | @ember-decorators/object | @ember/object |
 | --- | --- |
