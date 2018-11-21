@@ -13,6 +13,8 @@ Additional Reading:
  - [Why go native (from ember-decorators)](https://ember-decorators.github.io/ember-decorators/docs/why-go-native)
  - [Native Class Roadmap RFC](https://github.com/pzuraq/emberjs-rfcs/blob/b47e7f9ec4f02c7d27d50de64691130e7d22747d/text/0000-native-class-roadmap.md)
 
+_NOTE: This RFC requires that decorators hit Stage 3 and should not be accepted until then._
+
 ## Motivation
 
 Decorators bring a more natural way of declaring computed properties to native classes than the current computed macros.
@@ -96,7 +98,15 @@ The gist of the strategy from `@ember-decorators` is that all of the original co
 
 Both the existing `@ember` `computed` and the `@ember-decorators` `@computed` do some validation against the passed arguments to determine how to build the property. For example, the `computedDecoratorWithParams` can handle the scenarios where `@computed` has and does not have arguments passed by checking both the existence of certain parameters, the number of parameters, and the types of the parameters. This technique would be extended to support both `computed` and `@computed` usage from the same import.
 
-This process would be repeated for each computed property macro
+This process would be repeated for each macro. The following tables represent the current mapping of `@ember-decorators` functionality with that found in `@ember`
+
+| @ember-decorators/service | @ember/service |
+| --- | --- |
+| service | |
+
+| @ember-decorators/controller | @ember/service |
+| --- | --- |
+| controller | |
 
 | @ember-decorators/object | @ember/object |
 | --- | --- |
@@ -106,7 +116,7 @@ This process would be repeated for each computed property macro
 | unobserves |  |
 | on | in `@ember/object/evented` |
 | off |  |
-| readOnly | in `@ember/object/computed` |
+| readOnly |  |
 | volatile |  |
 
 | @ember-decorators/object/computed | @ember/object/computed |
@@ -138,7 +148,7 @@ This process would be repeated for each computed property macro
 | | oneWay |
 | or | or |
 | overridableReads | |
-| in `@ember-decorators/object` | readOnly |
+| | readOnly |
 | reads | reads |
 | setDiff | setDiff |
 | sort | sort |
@@ -146,6 +156,13 @@ This process would be repeated for each computed property macro
 | union | union|
 | uniq | uniq |
 | uniqBy | uniqBy |
+
+
+Out of scope: `@ember-decorators/data`, `@ember-decorators/component`.
+
+ember data decorators should be handled in the ember-data repository, and should go through its own RFC process (which would hopefully be easy after this one).
+
+the component decorators are all being omitted because of the direction components are heading. With the eventual glimmer components, `attribute`, `className`, `classNames`, `tagNames`, and `layout` will not be needed.
 
 
 ## How we teach this
@@ -165,9 +182,21 @@ Once there is are codemods for all the scenarios, the legacy syntax can be depre
 
 ## Drawbacks
 
-Decorators are not stage 3
+`@readOnly` in `@ember-decorators` is totally different from `readOnly` in `@ember`.
+
+The mapping:
+
+| `@ember-decorators` | `@ember` |
+| --- | --- |
+| `@readOnly` | `computed().readOnly` |
+| `@reads` | `computed.readOnly()` |
+| `@overridableReads` | `computed.reads()` |
+
+So, if these 3 decorators are to exist all at `@ember/object/computed`, there will be conflicts with existing `reads` and `readOnly` macros.
+
 
 ## Unresolved questions
 
 - Should the `@ember-decorators/utils` package get pulled in as well -- it would greatly help with the conversion of all the computed properties.
 TBD?
+- Decide on a migration path for `readOnly` and `reads`
