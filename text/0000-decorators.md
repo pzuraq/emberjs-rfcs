@@ -68,8 +68,6 @@ export default class Profile extends Component {
 ```
 
 
-> Why are we doing this? What use cases does it support? What is the expected
-outcome?
 
 ## Detailed design
 
@@ -172,5 +170,4 @@ Decorators are not stage 3
 ## Unresolved questions
 
 - Should the `@ember-decorators/utils` package get pulled in as well -- it would greatly help with the conversion of all the computed properties.
-> Optional, but suggested for first drafts. What parts of the design are still
 TBD?
