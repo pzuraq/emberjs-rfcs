@@ -6,14 +6,17 @@
 
 ## Summary
 
+Native classes are now officially supported in Ember, but currently their usage is very limited. Core Ember features such as computed properties, actions, and service injections have no publicly supported APIs to be used with native class syntax.
+
 Decorators provide a way to abstract functionality and improve the developer experience of working with native classes.  This RFC outlines the implementation and rollout plan for bringing decorators to ember's computed properties (and other behavior) for use in native classes.
 
-Additional Reading:
+### A Note on Decorator Stability
 
- - [Why go native (from ember-decorators)](https://ember-decorators.github.io/ember-decorators/docs/why-go-native)
- - [Native Class Roadmap RFC](https://github.com/pzuraq/emberjs-rfcs/blob/b47e7f9ec4f02c7d27d50de64691130e7d22747d/text/0000-native-class-roadmap.md)
+Decorator support in Ember is crucial for the release of Ember Octane. Native classes are not usable without decorators, and they are a major part of the next edition. That said, decorators are still a _stage 2_ proposal in TC39, and merging support for them before stage 3 would be a significant risk.
 
-_NOTE: This RFC requires that decorators hit Stage 3 and should not be accepted until then._
+This RFC is being made now so that we can get early discussion out of the way, and agree on the general parameters of decorators in Ember. Ideally, there will be no changes major changes before decorators move to stage 3, and we'll be able to merge this RFC shortly after it is announced.
+
+Alternatively, if decorators do not move forward in TC39 in the next few months, we may need to consider making an exception for decorators, or scoping down Ember Octane.
 
 ## Motivation
 
