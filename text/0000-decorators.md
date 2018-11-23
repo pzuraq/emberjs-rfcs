@@ -14,7 +14,7 @@ Decorators provide a way to abstract functionality and improve the developer exp
 
 Decorator support in Ember is crucial for the release of Ember Octane. Native classes are not usable without decorators, and they are a major part of the next edition. That said, decorators are still a _stage 2_ proposal in TC39, and merging support for them before stage 3 would be a significant risk.
 
-This RFC is being made now so that we can get early discussion out of the way, and agree on the general parameters of decorators in Ember. Ideally, there will be no changes major changes before decorators move to stage 3, and we'll be able to merge this RFC shortly after it is announced.
+This RFC is being made now so that we can get early discussion out of the way, and agree on the general parameters of decorators in Ember. Ideally, there will be no major changes before decorators move to stage 3, and we'll be able to merge this RFC shortly after it is announced.
 
 Alternatively, if decorators do not move forward in TC39 in the next few months, we may need to consider making an exception for decorators, or scoping down Ember Octane.
 
@@ -54,25 +54,6 @@ export default class Profile extends Component {
   });
 }
 ```
-
-However, with decorators, currently provided by ember-decorators, we have a non-standard (though popular) addon that brings computed properties up to modern syntax -- and looks very close to what we'd want native ember to naturally look like.
-
-```ts
-import Component from '@ember/component';
-import { computed } from '@ember-decorators/object';
-
-export default class Profile extends Component {
-  firstName = 'Diana';
-  lastName = 'Prince';
-
-  @computed('firstName', 'lastName')
-  get fullName() {
-    return `${this.firstName} ${this.lastName}`;
-  }
-}
-```
-
-
 
 
 ## Detailed design
@@ -168,6 +149,13 @@ ember data decorators should be handled in the ember-data repository, and should
 
 the component decorators are all being omitted because of the direction components are heading. With the eventual glimmer components, `attribute`, `className`, `classNames`, `tagNames`, and `layout` will not be needed.
 
+### Decorator Options
+
+```ts
+@computed({ readOnly: true })
+@and('foo', 'bar', { readOnly: true })
+@(someCustomMacro().readOnly())
+```
 
 ## How we teach this
 
