@@ -13,7 +13,7 @@ syntax.
 
 Decorators provide a way to abstract functionality and improve the developer
 experience of working with native classes.  This RFC outlines the implementation
-and rollout plan for bringing decorators to ember's computed properties (and
+and rollout plan for bringing decorators to Ember's computed properties (and
 other behavior) for use in native classes.
 
 ### A Note on Decorator Stability
@@ -38,7 +38,7 @@ For the purposes of this RFC, we'll use the following terminology:
 
 * The **Octane programming model** refers to the new programming model
   established by the Ember Octane edition. It includes _native classes_,
-  _tracked properties_ and _glimmer components_, and more generally refers to
+  _tracked properties_ and _Glimmer components_, and more generally refers to
   features that will be considered _core to Ember_ in the future.
 * The **legacy programming model** refers to the traditional programming model.
   It includes _legacy classes_, _computed properties_, _event listeners_,
