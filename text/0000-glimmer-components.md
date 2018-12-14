@@ -52,7 +52,7 @@ A lot of the foundational work that arose from these discussions and paves the
 way for Glimmer components has already landed in Ember, including: Angle-bracket
 invocation, named arguments, element modifiers, and component managers.
 
-Glimmer components represent the final piece of that's required to enable the
+Glimmer components represent the final piece that's required to enable the
 "ember octane" programming model. They include the last of the major features
 that were discussed during the original Angle Brackets RFC, and holistically, we
 feel those features make a much simpler and more ergonomic component API. Taken
