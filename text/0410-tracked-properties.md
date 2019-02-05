@@ -28,8 +28,7 @@ export default class Person {
 ### A Note on Decorator Support
 
 This RFC proposes a decorator version of tracked properties, and uses this
-decorator version in most examples, on the assumption that the [Decorators RFC]
-(https://github.com/emberjs/rfcs/pull/408) will be accepted and implemented
+decorator version in most examples, on the assumption that the [Decorators RFC](https://github.com/emberjs/rfcs/pull/408) will be accepted and implemented
 before this RFC. If the Decorators RFC is _not_ accepted, or cannot be
 implemented due to other criteria not being met (such as decorators remaining at
 stage 2), then only the classic class syntax for tracked properties will be
