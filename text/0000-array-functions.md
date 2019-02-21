@@ -3,21 +3,25 @@
 - RFC PR:
 - Ember Issue: (leave this empty)
 
-# Array functions
+# Array Functions
 
 ## Summary
 
 This RFC proposes a way to work with arrays in ember without requiring that we
 extend the global `Array` prototype or manually wrap arrays with
-`Ember.A(array)`.
+`Ember.A(array)`. In addition, it proposes a way to provide integration for
+arrays with _tracked properties_.
 
-Specifically, for each method on the `MutableArray` mixin we will provide a
-similarly named function that takes an array as its first argument followed by
-the arguments to the method.
+Specifically, for each method on both the global `Array` class and the
+`MutableArray` mixin we will provide a similarly named function that takes an
+array as its first argument followed by the arguments to the method.
 
 For example, instead of calling `array.pushObject(item)` you can call
 `pushObject(array, item)`. For a full list see the expandible list in [Detailed
 design](#detailed-design).
+
+These functions will be added as an official Ember addon, rather than as part of
+Ember's core codebase.
 
 ## Motivation
 
@@ -42,16 +46,40 @@ It's also worth noting that when you using fastboot you are required to have
 `Array` prototype extensions disabled currently and thus forced to deal with
 these issues.
 
+Additionally, native arrays currently do not integrate well with tracked
+properties, even when wrapped with `Ember.A()`. This is because every single
+method that can be called on the array must be wrapped in order for autotracking
+to pick up that the array has been used. `Ember.A()` does _not_ wrap any
+existing native functions, and even if it did, there are functions which are
+implemented on native arrays but _not_ on `MutableArray`, such as
+`Array.prototype.join()`.
+
+Tracked properties can integrate in other ways with arrays (e.g. by using
+immutable patterns, unidirectional data flow, or native `Proxy`) but most of
+these patterns will be new to existing Ember applications, and will take time to
+adopt (or in the case of `Proxy`, dropping support for IE11). Providing these
+functions is essentially a compatibility layer, similar to the way we support
+usage of `get` and `set` within tracked getters/contexts. In time, the community
+will be able to migrate off of them, but for now they will allow us to move
+forward.
+
+These functions will be added as an official addon, allowing users to opt out of
+adding them to their codebase if they _are_ using other patterns for arrays. It
+will be installed with the default blueprint, and referenced in the guides, but
+it won't be part of the core Ember codebase.
+
 ## Detailed design
 
-For each method in the `MutableArray` mixin we will export a similarly named
-function from `@ember/array`.
+For each method in the `Array` class, and each method in the `MutableArray`
+mixin we will export a similarly named function from `@ember/array`.
 
 For example, the method `array.objectAt(index)` will map to the function
-`objectAt(array, index)` with implementation
+`objectAt(array, index)` with implementation:
 
 ```js
 function objectAt(array, index) {
+  get(array, '[]');
+
   if (Array.isArray(array)) {
     return array[index];
   } else {
@@ -62,12 +90,52 @@ function objectAt(array, index) {
 
 As you can see, the native array case is handled explicitly in order to avoid
 assuming that the global `Array` prototype has been extended, but otherwise we
-just delegate to the `objectAt` method.
+just delegate to the `objectAt` method. The call to `get('[]')` entangles the
+array's `[]` property with the tracking stack. That property is what will be
+updated whenever the array is mutated with one of the mutation methods such as
+`pushObject`, matching the current behavior.
 
 For reference, below is an expandable list of all array functions we will need.
 
 <details>
-  <summary>List of array functions (49)</summary>
+  <summary>List of Array functions (32)</summary>
+  <code>
+    <ul>
+      <li>concat</li>
+      <li>copyWithin</li>
+      <li>entries</li>
+      <li>every</li>
+      <li>fill</li>
+      <li>filter</li>
+      <li>find</li>
+      <li>findIndex</li>
+      <li>flat</li>
+      <li>flatMap</li>
+      <li>forEach</li>
+      <li>includes</li>
+      <li>indexOf</li>
+      <li>join</li>
+      <li>keys</li>
+      <li>lastIndexOf</li>
+      <li>map</li>
+      <li>pop</li>
+      <li>push</li>
+      <li>reduce</li>
+      <li>reduceRight</li>
+      <li>reverse</li>
+      <li>shift</li>
+      <li>slice</li>
+      <li>some</li>
+      <li>sort</li>
+      <li>splice</li>
+      <li>toLocaleString</li>
+      <li>toSource</li>
+      <li>toString</li>
+      <li>unshift</li>
+      <li>values</li>
+    </ul>
+  </code>
+  <summary>List of MutableArray functions (43)</summary>
   <code>
     <ul>
       <li>addArrayObserver</li>
@@ -78,12 +146,8 @@ For reference, below is an expandable list of all array functions we will need.
       <li>arrayContentWillChange</li>
       <li>clear</li>
       <li>compact</li>
-      <li>every</li>
-      <li>filter</li>
       <li>filterBy</li>
-      <li>find</li>
       <li>findBy</li>
-      <li>forEach</li>
       <li>getEach</li>
       <li>includes</li>
       <li>indexOf</li>
@@ -92,14 +156,12 @@ For reference, below is an expandable list of all array functions we will need.
       <li>isAny</li>
       <li>isEvery</li>
       <li>lastIndexOf</li>
-      <li>map</li>
       <li>mapBy</li>
       <li>objectAt</li>
       <li>objectsAt</li>
       <li>popObject</li>
       <li>pushObject</li>
       <li>pushObjects</li>
-      <li>reduce</li>
       <li>reject</li>
       <li>rejectBy</li>
       <li>removeArrayObserver</li>
@@ -149,14 +211,4 @@ since it is mostly just shuffling around existing code.
 
 ## Alternatives
 
-- We could not do this and continue using `Ember.A` in addons / fastboot apps
-
-I don't think this is a good path for the reasons listed in
-[Motivation](#motivation),
-
-- Improve fastboot so that it allows prototype extensions
-
-It's true that this would writing fastboot apps more ergnomic but it doesn't
-solve the problem for adddon authors and it doesn't solve the greater problem of
-getting us closer to Ember not rely on global prototype extensions for a good
-user experience.
+- This could be made as an official addon, `ember-array-functions`. This would
